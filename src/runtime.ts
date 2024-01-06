@@ -32,13 +32,21 @@ const registers = [
     "x30",
 ];
 
+interface Command {
+    command: string;
+    args: string[];
+    line: number;
+}
+
 /**
  * Runs the program
- * @param {string} text 
+ * @param {Command[]} tokens
  */
-const run = (text) => {
-    const tokens = tokenize(text);
-    console.log(tokens);
+export const run = (tokens: Command[]) => {
+    console.log({
+        'title': 'running the program',
+        tokens,
+    });
 
     if (!tokens.some((token) => token.command === ".global")) {
         alert("No entry point found. Please add a .global directive.");
@@ -66,32 +74,27 @@ const run = (text) => {
 };
 
 /**
- * @typedef {Object} Command
- * @property {string} command
- * @property {string[]} args
- */
-
-/**
  * @param {string} text
  * @returns {Command[]}
  */
-const tokenize = (text) => {
+export const tokenize = (text: string): Command[] => {
     const commands = [];
     const lines = text.split("\n");
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
         if (line.trim().length === 0) continue;
         const command = line.trim().split(" ")[0];
         const args = line.trim().split(" ").slice(1);
         for (let i = 0; i < args.length - 1; i++) {
             args[i] = args[i].replace(",", "");
         }
-        console.log("parsing", { command, args });
-        commands.push({ command, args });
+        commands.push({ command, args, line: i + 1 });
     }
     return commands;
 };
 
-const mov = (args) => {
+const mov = (args: string[]) => {
     const [dest, src] = args;
     if (src[0] === "#") {
         const int = parseInt(src.slice(1));
@@ -100,11 +103,11 @@ const mov = (args) => {
     }
 };
 
-const setRegister = (register, value) => {
+const setRegister = (register: string, value: string) => {
     document.getElementById(register).innerHTML = value;
 };
 
-const reset = () => {
+export const reset = () => {
     for (const register of registers) {
         setRegister(register, "0x0");
     }
