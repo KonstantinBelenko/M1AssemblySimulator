@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacOS Arm64 Simulator</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black h-[100vh]">
+    
+    <main class="flex h-full">
+
+        <div class="flex flex-col w-[50%]">
+            <textarea
+                spellcheck="false"
+                class="
+                    bg-black
+                    text-white 
+                    flex
+                    h-full
+                    m-4
+                    p-4
+                    border-white
+                    border-2 
+                    outline-none
+                "
+                id="code" 
+                placeholder="Enter your code here..."
+            >.global main
+            
+main:
+        mov x0, #10</textarea>
+
+            <div class="flex">
+                <button 
+                    class="
+                        bg-black
+                        text-white 
+                        flex
+                        m-4
+                        p-4
+                        border-white
+                        border-2 
+                        outline-none
+                        hover:bg-green-900
+                        active:bg-green-800
+                        duration-200
+                        transition-all
+                        w-full
+                    "
+                    id="run"
+                    onclick="run(document.getElementById('code').value)"
+                >Run</button>
+                <button 
+                    class="
+                        bg-black
+                        text-white 
+                        flex
+                        m-4
+                        p-4
+                        border-white
+                        border-2 
+                        outline-none
+                        hover:bg-blue-900
+                        active:bg-blue-800
+                        duration-200
+                        transition-all
+                        w-[20%]
+                    "
+                    id="run"
+                    onclick="reset()"
+                >Reset</button>
+            </div>
+            
+        </div>
+
+        <div
+            class="
+                flex
+                gap-4
+                bg-black
+                text-white 
+                w-[50%]
+                m-4
+                p-4
+                border-white
+                border-2 
+                outline-none
+            "
+        >
+            <!-- table <rx>: <value> -->
+            <table class="table-auto w-[30%] text-xs">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Register</th>
+                        <th class="px-4 py-2">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2">x0</td>
+                        <td class="border px-4 py-2" id="x0">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x1</td>
+                        <td class="border px-4 py-2" id="x1">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x2</td>
+                        <td class="border px-4 py-2" id="x2">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x3</td>
+                        <td class="border px-4 py-2" id="x3">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x4</td>
+                        <td class="border px-4 py-2" id="x4">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x5</td>
+                        <td class="border px-4 py-2" id="x5">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x6</td>
+                        <td class="border px-4 py-2" id="x6">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x7</td>
+                        <td class="border px-4 py-2" id="x7">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x8</td>
+                        <td class="border px-4 py-2" id="x8">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x9</td>
+                        <td class="border px-4 py-2" id="x9">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x10</td>
+                        <td class="border px-4 py-2" id="x10">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x11</td>
+                        <td class="border px-4 py-2" id="x11">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x12</td>
+                        <td class="border px-4 py-2" id="x12">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x13</td>
+                        <td class="border px-4 py-2" id="x13">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x14</td>
+                        <td class="border px-4 py-2" id="x14">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x15</td>
+                        <td class="border px-4 py-2" id="x15">0x0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table-auto w-[30%] text-xs">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Register</th>
+                        <th class="px-4 py-2">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2">x16</td>
+                        <td class="border px-4 py-2" id="x16">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x17</td>
+                        <td class="border px-4 py-2" id="x17">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x18</td>
+                        <td class="border px-4 py-2" id="x18">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x19</td>
+                        <td class="border px-4 py-2" id="x19">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x20</td>
+                        <td class="border px-4 py-2" id="x20">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x21</td>
+                        <td class="border px-4 py-2" id="x21">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x22</td>
+                        <td class="border px-4 py-2" id="x22">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x23</td>
+                        <td class="border px-4 py-2" id="x23">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x24</td>
+                        <td class="border px-4 py-2" id="x24">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x25</td>
+                        <td class="border px-4 py-2" id="x25">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x26</td>
+                        <td class="border px-4 py-2" id="x26">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x27</td>
+                        <td class="border px-4 py-2" id="x27">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x28</td>
+                        <td class="border px-4 py-2" id="x28">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x29</td>
+                        <td class="border px-4 py-2" id="x29">0x0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x30</td>
+                        <td class="border px-4 py-2" id="x30">0x0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="./main.js"></script>
+</body>
+</html>
