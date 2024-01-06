@@ -3,3 +3,5 @@
 # 🚧 Under Construction 👷‍♂️
 
 This is an apple silicon assembly simulator.
+
+[ONLINE ACCESS HERE](https://main--graceful-faloodeh-0d9f9c.netlify.app/)https://main--graceful-faloodeh-0d9f9c.netlify.app/
