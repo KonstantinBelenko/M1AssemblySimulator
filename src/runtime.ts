@@ -96,6 +96,13 @@ export const tokenize = (text: string): Command[] => {
 
 const mov = (args: string[]) => {
     const [dest, src] = args;
+
+    // check if register is out of bounds
+    if (!registers.includes(dest)) {
+        alert(`Invalid register ${dest}`);
+        return;
+    }
+
     if (src[0] === "#") {
         const int = parseInt(src.slice(1));
         const hexRep = "0x" + int.toString(16);
