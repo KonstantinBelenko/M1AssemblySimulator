@@ -59,6 +59,12 @@ export const run = (tokens: Command[]) => {
             case "mov":
                 mov(token.args);
                 break;
+            case "add":
+                add(token.args);
+                break;
+            case "sub":
+                sub(token.args);
+                break;
             case ".global":
                 break;
             case entryPoint + ":":
@@ -83,7 +89,9 @@ export const tokenize = (text: string): Command[] => {
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
+        if (line.trim().startsWith("#")) continue;
         if (line.trim().length === 0) continue;
+        
         const command = line.trim().split(" ")[0];
         const args = line.trim().split(" ").slice(1);
         for (let i = 0; i < args.length - 1; i++) {
@@ -103,12 +111,98 @@ const mov = (args: string[]) => {
         return;
     }
 
-    if (src[0] === "#") {
-        const int = parseInt(src.slice(1));
-        const hexRep = "0x" + int.toString(16);
-        setRegister(dest, hexRep);
+    if (src[0] !== "#" && !registers.includes(src)) {
+        alert(`Invalid register ${src}`);
+        return;
     }
+
+    let value: number;
+    if (src[0] === "#") {
+        value = parseInt(src.slice(1));
+    } else {
+        value = parseInt(document.getElementById(src).innerHTML);
+    }
+
+    const hexRep = "0x" + value.toString(16);
+
+    setRegister(dest, hexRep);
 };
+
+const add = (args: string[]) => {
+    const [dest, left, right] = args;
+
+    if (!registers.includes(dest)) {
+        alert(`Invalid register ${dest}`);
+        return;
+    }
+
+    if (left[0] !== "#" && !registers.includes(left)) {
+        alert(`Invalid register ${left}`);
+        return;
+    }
+
+    if (right[0] !== "#" && !registers.includes(right)) {
+        alert(`Invalid register ${right}`);
+        return;
+    }
+
+    let leftValue: number;
+    let rightValue: number;
+    if (left[0] === "#") {
+        leftValue = parseInt(left.slice(1));
+    } else {
+        leftValue = parseInt(document.getElementById(left).innerHTML);
+    }
+
+    if (right[0] === "#") {
+        rightValue = parseInt(right.slice(1));
+    } else {
+        rightValue = parseInt(document.getElementById(right).innerHTML);
+    }
+
+    const result = leftValue + rightValue;
+    const hexRep = "0x" + result.toString(16);
+
+    setRegister(dest, hexRep);
+};
+
+const sub = (args: string[]) => {
+    const [dest, left, right] = args;
+
+    if (!registers.includes(dest)) {
+        alert(`Invalid register ${dest}`);
+        return;
+    }
+
+    if (left[0] !== "#" && !registers.includes(left)) {
+        alert(`Invalid register ${left}`);
+        return;
+    }
+
+    if (right[0] !== "#" && !registers.includes(right)) {
+        alert(`Invalid register ${right}`);
+        return;
+    }
+
+    let leftValue: number;
+    let rightValue: number;
+    if (left[0] === "#") {
+        leftValue = parseInt(left.slice(1));
+    } else {
+        leftValue = parseInt(document.getElementById(left).innerHTML);
+    }
+
+    if (right[0] === "#") {
+        rightValue = parseInt(right.slice(1));
+    } else {
+        rightValue = parseInt(document.getElementById(right).innerHTML);
+    }
+
+    const result = leftValue - rightValue;
+    const hexRep = "0x" + result.toString(16);
+
+    setRegister(dest, hexRep);
+}
 
 const setRegister = (register: string, value: string) => {
     document.getElementById(register).innerHTML = value;

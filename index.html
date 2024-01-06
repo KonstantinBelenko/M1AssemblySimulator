@@ -35,7 +35,17 @@
             >.global main
             
 main:
-        mov x0, #10</textarea>
+        # Move 2 into x0
+        mov x0, #2
+
+        # Move 3 into x1
+        mov x1, #3
+
+        # Add 3 + 2 and save to x2
+        add x2, x0, x1
+
+        # Sub 1 from x2, and save to x3
+        sub x3, x2, #1</textarea>
 
             <div class="flex">
                 <button 

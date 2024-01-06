@@ -1,6 +1,6 @@
 export const setupCodeWindow = () => {
-    // Tab key in textarea
     document.getElementById("code").addEventListener("keydown", function (e) {
+        // Tab key in textarea
         if (e.key == "Tab") {
             e.preventDefault();
             // var start = this.selectionStart;
@@ -16,5 +16,5 @@ export const setupCodeWindow = () => {
             // put caret at right position again
             (<HTMLInputElement>this).selectionStart = (<HTMLInputElement>this).selectionEnd = start + 1;
         }
-    });
+    });    
 };
