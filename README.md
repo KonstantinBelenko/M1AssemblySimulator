@@ -1,4 +1,5 @@
-![image](https://github.com/KonstantinBelenko/M1AssemblySimulator/assets/90444271/c9b004cf-feb2-4eb4-b4d6-3012727afbac)
+![image](https://github.com/KonstantinBelenko/M1AssemblySimulator/assets/90444271/c1fe125d-159c-41d4-b260-4efa2dbe14f7)
+
 
 # 🚧 Under Construction 👷‍♂️
 
