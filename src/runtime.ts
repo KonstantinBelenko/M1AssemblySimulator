@@ -1,51 +1,38 @@
-import { Command, registers, type Register } from "./types/registers";
+import { type Instruction, type Register, registers } from './types/registers';
 
 
 /**
  * Runs the program
- * @param {Command[]} tokens
+ * @param {Instruction[]} tokens
  */
-export function* run (tokens: Command[]): Generator<void, void, void> {
-    if (!tokens.some((token) => token.command === ".global")) {
-        alert("No entry point found. Please add a .global directive.")
-        yield
-    }
-    const entryPoint = tokens.find((token) => token.command === ".global").args[0]
+export function* run (instructions: Instruction[], pcStartAddr: string): Generator<void, void, void> {
 
-    let pc = tokens.findIndex((token) => token.command === entryPoint + ":")
+    setRegister("pc", parseInt(pcStartAddr));
+    let pc = parseInt(pcStartAddr) / 4;
 
-    if (pc === -1) {
-        alert(`No entry point found for ${entryPoint}`)
-        yield
-    }
-
-    setRegister("pc", tokens[pc].address)
-
-    while (pc < tokens.length) {
-        const token = tokens[pc];
-        switch (token.command) {
+    while (pc < instructions.length) {
+        const instruction = instructions[pc];
+        switch (instruction.command) {
             case "mov":
-                mov(token.args[0] as Register, token.args[1]);
+                mov(instruction.args[0] as Register, instruction.args[1]);
                 break;
             case "add":
-                add(token.args[0] as Register, token.args[1] as Register, token.args[2]);
+                add(instruction.args[0] as Register, instruction.args[1] as Register, instruction.args[2]);
                 break;
             case "sub":
-                sub(token.args[0] as Register, token.args[1], token.args[2]);
+                sub(instruction.args[0] as Register, instruction.args[1], instruction.args[2]);
                 break;
             case "mul":
-                mul(token.args[0] as Register, token.args[1] as Register, token.args[2] as Register);
-            case ".global":
-            case entryPoint + ":":
+                mul(instruction.args[0] as Register, instruction.args[1] as Register, instruction.args[2] as Register);
                 break;
             default:
-                console.log(token);
-                alert(`Unknown command \"${token.command}\" at line ${token.line}`);
+                console.log(instruction);
+                alert(`Unknown command \"${instruction.command}\" at line ${instruction.line}`);
                 break;
         }
         pc++;
-        if (pc < tokens.length) {
-            setRegister("pc", tokens[pc].address); // Set PC to the address of the next instruction
+        if (pc < instructions.length) {
+            setRegister("pc", instructions[pc].address); // Set PC to the address of the next instruction
         }
         yield;
     }
@@ -53,22 +40,51 @@ export function* run (tokens: Command[]): Generator<void, void, void> {
 
 /**
  * @param {string} text
- * @returns {Command[]}
+ * @returns {Instruction[]}
  */
-export const tokenize = (text: string): Command[] => {
-    const commands = [];
+export const tokenize = (text: string): { instructions: Instruction[], pcStartAddr: string } => {
+    const instructions = [];
     const lines = text.split("\n");
+    let entryPoint = "";
+    let isEntryPoint = false;
+    let pcStartAddr = "";
+
     for (let i = 0, address = 0; i < lines.length; i++) {
-        const line = lines[i];
+        const line = lines[i].trim();
 
-        if (line.trim().startsWith("#") || line.trim().length === 0) continue;
+        if (line.startsWith("#") || line.length === 0) continue;
 
-        const command = line.trim().split(" ")[0];
-        const args = line.trim().split(" ").slice(1).map(arg => arg.replace(",", ""))
-        commands.push({ command, args, line: i + 1, address });
-        address += 8;
+        if (line.startsWith(".global ")) {
+            entryPoint = line.split(" ")[1];
+            continue;
+        }
+
+        if (line.includes(":") && entryPoint.length !== 0 && line.startsWith(entryPoint)) {
+            isEntryPoint = true;
+            continue;
+        } else if (line.includes(":")) {
+            continue;
+        }
+
+        const command = line.split(" ")[0];
+        const args = line.split(" ").slice(1).map(arg => arg.replace(",", ""))
+        instructions.push({ command, args, line: i + 1, address });
+
+        if (isEntryPoint) {
+            isEntryPoint = false;
+            pcStartAddr = address.toString();
+            address += 4;
+            continue;
+        }
+
+        address += 4;
     }
-    return commands;
+
+    if (pcStartAddr.length === 0) {
+        throw new Error("No entry point found. Please add a .global directive.")
+    }
+
+    return { instructions, pcStartAddr }
 };
 
 const mov = (dest: Register, src: string) => {

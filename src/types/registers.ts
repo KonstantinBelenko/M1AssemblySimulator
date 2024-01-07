@@ -71,9 +71,9 @@ export const registers: Register[] = [
     "cpsr"
 ]
 
-export interface Command {
+export interface Instruction {
+    address: number;
     command: string;
     args: string[];
-    address: number;
     line: number;
 }

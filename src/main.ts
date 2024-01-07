@@ -22,8 +22,12 @@ let stepGenerator: Generator | null = null;
 document.getElementById("run").addEventListener("click", () => {
     const code = (<HTMLTextAreaElement>document.getElementById("code")).value
     const tokens = tokenize(code)
+
+    console.log('Instructions:')
+    console.table(tokens.instructions)
+
     let line = 0;
-    stepGenerator = run(tokens)
+    stepGenerator = run(tokens.instructions, tokens.pcStartAddr)
     
     let { done } = stepGenerator.next()
     let exDone = done
@@ -45,7 +49,7 @@ document.getElementById("step").addEventListener("click", () => {
     } else {
         const code = (<HTMLTextAreaElement>document.getElementById("code")).value
         const tokens = tokenize(code)
-        stepGenerator = run(tokens)
+        stepGenerator = run(tokens.instructions, tokens.pcStartAddr)
         const { done } = stepGenerator.next()
         if (done) {
             UIExecutionEnd()
