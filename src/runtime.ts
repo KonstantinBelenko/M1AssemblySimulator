@@ -1,81 +1,53 @@
-const registers = [
-    "x0",
-    "x1",
-    "x2",
-    "x3",
-    "x4",
-    "x5",
-    "x6",
-    "x7",
-    "x8",
-    "x9",
-    "x10",
-    "x11",
-    "x12",
-    "x13",
-    "x14",
-    "x15",
-    "x16",
-    "x17",
-    "x18",
-    "x19",
-    "x20",
-    "x21",
-    "x22",
-    "x23",
-    "x24",
-    "x25",
-    "x26",
-    "x27",
-    "x28",
-    "x29",
-    "x30",
-];
+import { Command, registers, type Register } from "./types/registers";
 
-interface Command {
-    command: string;
-    args: string[];
-    line: number;
-}
 
 /**
  * Runs the program
  * @param {Command[]} tokens
  */
-export const run = (tokens: Command[]) => {
-    console.log({
-        'title': 'running the program',
-        tokens,
-    });
-
+export function* run (tokens: Command[]): Generator<void, void, void> {
     if (!tokens.some((token) => token.command === ".global")) {
-        alert("No entry point found. Please add a .global directive.");
+        alert("No entry point found. Please add a .global directive.")
+        yield
     }
-    const entryPoint = tokens.find((token) => token.command === ".global")
-        .args[0];
+    const entryPoint = tokens.find((token) => token.command === ".global").args[0]
 
-    for (const token of tokens) {
+    let pc = tokens.findIndex((token) => token.command === entryPoint + ":")
+
+    if (pc === -1) {
+        alert(`No entry point found for ${entryPoint}`)
+        yield
+    }
+
+    setRegister("pc", tokens[pc].address)
+
+    while (pc < tokens.length) {
+        const token = tokens[pc];
         switch (token.command) {
             case "mov":
-                mov(token.args);
+                mov(token.args[0] as Register, token.args[1]);
                 break;
             case "add":
-                add(token.args);
+                add(token.args[0] as Register, token.args[1] as Register, token.args[2]);
                 break;
             case "sub":
-                sub(token.args);
+                sub(token.args[0] as Register, token.args[1], token.args[2]);
                 break;
+            case "mul":
+                mul(token.args[0] as Register, token.args[1] as Register, token.args[2] as Register);
             case ".global":
-                break;
             case entryPoint + ":":
                 break;
             default:
                 console.log(token);
-                alert(
-                    `Unknown command \"${token.command}\" at line ${token.line}`
-                );
+                alert(`Unknown command \"${token.command}\" at line ${token.line}`);
                 break;
         }
+        pc++;
+        if (pc < tokens.length) {
+            setRegister("pc", tokens[pc].address); // Set PC to the address of the next instruction
+        }
+        yield;
     }
 };
 
@@ -86,24 +58,20 @@ export const run = (tokens: Command[]) => {
 export const tokenize = (text: string): Command[] => {
     const commands = [];
     const lines = text.split("\n");
-    for (let i = 0; i < lines.length; i++) {
+    for (let i = 0, address = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        if (line.trim().startsWith("#")) continue;
-        if (line.trim().length === 0) continue;
-        
+        if (line.trim().startsWith("#") || line.trim().length === 0) continue;
+
         const command = line.trim().split(" ")[0];
-        const args = line.trim().split(" ").slice(1);
-        for (let i = 0; i < args.length - 1; i++) {
-            args[i] = args[i].replace(",", "");
-        }
-        commands.push({ command, args, line: i + 1 });
+        const args = line.trim().split(" ").slice(1).map(arg => arg.replace(",", ""))
+        commands.push({ command, args, line: i + 1, address });
+        address += 8;
     }
     return commands;
 };
 
-const mov = (args: string[]) => {
-    const [dest, src] = args;
+const mov = (dest: Register, src: string) => {
 
     // check if register is out of bounds
     if (!registers.includes(dest)) {
@@ -111,7 +79,7 @@ const mov = (args: string[]) => {
         return;
     }
 
-    if (src[0] !== "#" && !registers.includes(src)) {
+    if (src[0] !== "#" && !registers.includes(src as Register)) {
         alert(`Invalid register ${src}`);
         return;
     }
@@ -123,25 +91,22 @@ const mov = (args: string[]) => {
         value = parseInt(document.getElementById(src).innerHTML);
     }
 
-    const hexRep = "0x" + value.toString(16);
-
-    setRegister(dest, hexRep);
+    setRegister(dest, value);
 };
 
-const add = (args: string[]) => {
-    const [dest, left, right] = args;
+const add = (dest: Register, left: Register, right: string) => {
 
     if (!registers.includes(dest)) {
         alert(`Invalid register ${dest}`);
         return;
     }
 
-    if (left[0] !== "#" && !registers.includes(left)) {
+    if (!registers.includes(left)) {
         alert(`Invalid register ${left}`);
         return;
     }
 
-    if (right[0] !== "#" && !registers.includes(right)) {
+    if (right[0] !== "#" && !registers.includes(right as Register)) {
         alert(`Invalid register ${right}`);
         return;
     }
@@ -161,25 +126,22 @@ const add = (args: string[]) => {
     }
 
     const result = leftValue + rightValue;
-    const hexRep = "0x" + result.toString(16);
-
-    setRegister(dest, hexRep);
+    setRegister(dest, result);
 };
 
-const sub = (args: string[]) => {
-    const [dest, left, right] = args;
+const sub = (dest: Register, left: string, right: string) => {
 
     if (!registers.includes(dest)) {
         alert(`Invalid register ${dest}`);
         return;
     }
 
-    if (left[0] !== "#" && !registers.includes(left)) {
+    if (left[0] !== "#" && !registers.includes(left as Register)) {
         alert(`Invalid register ${left}`);
         return;
     }
 
-    if (right[0] !== "#" && !registers.includes(right)) {
+    if (right[0] !== "#" && !registers.includes(right as Register)) {
         alert(`Invalid register ${right}`);
         return;
     }
@@ -199,17 +161,40 @@ const sub = (args: string[]) => {
     }
 
     const result = leftValue - rightValue;
-    const hexRep = "0x" + result.toString(16);
-
-    setRegister(dest, hexRep);
+    setRegister(dest, result);
 }
 
-const setRegister = (register: string, value: string) => {
-    document.getElementById(register).innerHTML = value;
+const mul = (dest: Register, left: Register, right: Register) => {
+    if (!registers.includes(dest)) {
+        alert(`Invalid register ${dest}`);
+        return;
+    }
+
+    if (!registers.includes(left)) {
+        alert(`Invalid register ${left}`);
+        return;
+    }
+
+    if (!registers.includes(right)) {
+        alert(`Invalid register ${right}`);
+        return;
+    }
+
+    const leftValue = parseInt(document.getElementById(left).innerHTML);
+    const rightValue = parseInt(document.getElementById(right).innerHTML);
+
+    const result = leftValue * rightValue;
+    setRegister(dest, result);
+}
+
+const setRegister = (register: Register, int: number) => {
+    document.getElementById(register).innerHTML = "0x" + int.toString(16);
+    document.getElementById(register + "d").innerHTML = int.toString();
 };
 
 export const reset = () => {
     for (const register of registers) {
-        setRegister(register, "0x0");
+        if (register[0] === "w") continue
+        setRegister(register, 0);
     }
 };

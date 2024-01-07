@@ -15,51 +15,40 @@
     </header>
 
     <main class="flex h-[90%]">
-
+        <!-- Editor & Interface -->
         <div class="flex flex-col w-[50%]">
-            <textarea
-                spellcheck="false"
-                class="
-                    bg-gray-900
-                    text-white 
-                    flex
-                    h-full
-                    m-4
-                    p-4
-                    border-white
-                    border-2 
-                    outline-none
-                "
-                id="code" 
-                placeholder="Enter your code here..."
-            >.global main
-            
-main:
-        # Move 2 into x0
-        mov x0, #2
 
-        # Move 3 into x1
-        mov x1, #3
+            <!-- Editor -->
+            <div class="h-full p-4">
+                <textarea
+                    spellcheck="false"
+                    class="
+                        bg-gray-900
+                        text-white 
+                        flex
+                        h-full
+                        w-full
+                        p-4
+                        outline-none
+                    "
+                    id="code" 
+                    placeholder="Enter your code here..."
+                ></textarea>
+            </div>
 
-        # Add 3 + 2 and save to x2
-        add x2, x0, x1
-
-        # Sub 1 from x2, and save to x3
-        sub x3, x2, #1</textarea>
-
+            <!-- Interface -->
             <div class="flex">
                 <button 
                     class="
-                        bg-black
                         text-white 
                         flex
                         m-4
                         p-4
-                        border-white
-                        border-2 
                         outline-none
-                        hover:bg-green-900
-                        active:bg-green-800
+                        bg-green-900
+                        hover:bg-green-600
+                        active:bg-green-500
+                        disabled:bg-gray-500
                         duration-200
                         transition-all
                         w-full
@@ -68,16 +57,31 @@ main:
                 >Run</button>
                 <button 
                     class="
-                        bg-black
                         text-white 
                         flex
                         m-4
                         p-4
-                        border-white
-                        border-2 
                         outline-none
-                        hover:bg-blue-900
-                        active:bg-blue-800
+                        bg-yellow-900
+                        hover:bg-yellow-600
+                        active:bg-yellow-500
+                        disabled:bg-gray-500
+                        duration-200
+                        transition-all
+                        w-full
+                    "
+                    id="step"
+                >Step</button>
+                <button
+                    class="
+                        text-white 
+                        flex
+                        m-4
+                        p-4
+                        outline-none
+                        bg-blue-900
+                        hover:bg-blue-600
+                        active:bg-blue-500
                         duration-200
                         transition-all
                         w-[20%]
@@ -88,9 +92,11 @@ main:
             
         </div>
 
+        <!-- Registers -->
         <div
             class="
                 flex
+                items-start
                 gap-4
                 bg-black
                 text-white 
@@ -102,148 +108,206 @@ main:
                 outline-none
             "
         >
-            <!-- table <rx>: <value> -->
-            <table class="table-auto w-[30%] text-xs">
+            <table class="table-auto w-[30%] text-md">
                 <thead>
                     <tr>
                         <th class="px-4 py-2">Register</th>
-                        <th class="px-4 py-2">Value</th>
+                        <th class="px-4 py-2">Hex</th>
+                        <th class="px-4 py-2">Decimal</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="border px-4 py-2">x0</td>
                         <td class="border px-4 py-2" id="x0">0x0</td>
+                        <td class="border px-4 py-2" id="x0d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x1</td>
                         <td class="border px-4 py-2" id="x1">0x0</td>
+                        <td class="border px-4 py-2" id="x1d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x2</td>
                         <td class="border px-4 py-2" id="x2">0x0</td>
+                        <td class="border px-4 py-2" id="x2d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x3</td>
                         <td class="border px-4 py-2" id="x3">0x0</td>
+                        <td class="border px-4 py-2" id="x3d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x4</td>
                         <td class="border px-4 py-2" id="x4">0x0</td>
+                        <td class="border px-4 py-2" id="x4d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x5</td>
                         <td class="border px-4 py-2" id="x5">0x0</td>
+                        <td class="border px-4 py-2" id="x5d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x6</td>
                         <td class="border px-4 py-2" id="x6">0x0</td>
+                        <td class="border px-4 py-2" id="x6d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x7</td>
                         <td class="border px-4 py-2" id="x7">0x0</td>
+                        <td class="border px-4 py-2" id="x7d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x8</td>
                         <td class="border px-4 py-2" id="x8">0x0</td>
+                        <td class="border px-4 py-2" id="x8d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x9</td>
                         <td class="border px-4 py-2" id="x9">0x0</td>
+                        <td class="border px-4 py-2" id="x9d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x10</td>
                         <td class="border px-4 py-2" id="x10">0x0</td>
+                        <td class="border px-4 py-2" id="x10d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x11</td>
                         <td class="border px-4 py-2" id="x11">0x0</td>
+                        <td class="border px-4 py-2" id="x11d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x12</td>
                         <td class="border px-4 py-2" id="x12">0x0</td>
+                        <td class="border px-4 py-2" id="x12d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x13</td>
                         <td class="border px-4 py-2" id="x13">0x0</td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">x14</td>
-                        <td class="border px-4 py-2" id="x14">0x0</td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">x15</td>
-                        <td class="border px-4 py-2" id="x15">0x0</td>
+                        <td class="border px-4 py-2" id="x13d">0</td>
                     </tr>
                 </tbody>
             </table>
-            <table class="table-auto w-[30%] text-xs">
+            <table class="table-auto w-[30%] text-md">
                 <thead>
                     <tr>
                         <th class="px-4 py-2">Register</th>
                         <th class="px-4 py-2">Value</th>
+                        <th class="px-4 py-2">Decimal</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td class="border px-4 py-2">x14</td>
+                        <td class="border px-4 py-2" id="x14">0x0</td>
+                        <td class="border px-4 py-2" id="x14d">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">x15</td>
+                        <td class="border px-4 py-2" id="x15">0x0</td>
+                        <td class="border px-4 py-2" id="x15d">0</td>
+                    </tr>
+                    <tr>
                         <td class="border px-4 py-2">x16</td>
                         <td class="border px-4 py-2" id="x16">0x0</td>
+                        <td class="border px-4 py-2" id="x16d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x17</td>
                         <td class="border px-4 py-2" id="x17">0x0</td>
+                        <td class="border px-4 py-2" id="x17d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x18</td>
                         <td class="border px-4 py-2" id="x18">0x0</td>
+                        <td class="border px-4 py-2" id="x18d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x19</td>
                         <td class="border px-4 py-2" id="x19">0x0</td>
+                        <td class="border px-4 py-2" id="x19d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x20</td>
                         <td class="border px-4 py-2" id="x20">0x0</td>
+                        <td class="border px-4 py-2" id="x20d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x21</td>
                         <td class="border px-4 py-2" id="x21">0x0</td>
+                        <td class="border px-4 py-2" id="x21d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x22</td>
                         <td class="border px-4 py-2" id="x22">0x0</td>
+                        <td class="border px-4 py-2" id="x22d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x23</td>
                         <td class="border px-4 py-2" id="x23">0x0</td>
+                        <td class="border px-4 py-2" id="x23d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x24</td>
                         <td class="border px-4 py-2" id="x24">0x0</td>
+                        <td class="border px-4 py-2" id="x24d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x25</td>
                         <td class="border px-4 py-2" id="x25">0x0</td>
+                        <td class="border px-4 py-2" id="x25d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x26</td>
                         <td class="border px-4 py-2" id="x26">0x0</td>
+                        <td class="border px-4 py-2" id="x26d">0</td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2">x27</td>
                         <td class="border px-4 py-2" id="x27">0x0</td>
+                        <td class="border px-4 py-2" id="x27d">0</td>
                     </tr>
+                </tbody>
+            </table>
+            <table class="table-auto w-[30%] text-md">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Register</th>
+                        <th class="px-4 py-2">Value</th>
+                        <th class="px-4 py-2">Decimal</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <tr>
                         <td class="border px-4 py-2">x28</td>
                         <td class="border px-4 py-2" id="x28">0x0</td>
+                        <td class="border px-4 py-2" id="x28d">0</td>
                     </tr>
                     <tr>
-                        <td class="border px-4 py-2">x29</td>
-                        <td class="border px-4 py-2" id="x29">0x0</td>
+                        <td class="border px-4 py-2">fp</td>
+                        <td class="border px-4 py-2" id="fp">0x0</td>
+                        <td class="border px-4 py-2" id="fpd">0</td>
                     </tr>
                     <tr>
-                        <td class="border px-4 py-2">x30</td>
-                        <td class="border px-4 py-2" id="x30">0x0</td>
+                        <td class="border px-4 py-2">lr</td>
+                        <td class="border px-4 py-2" id="lr">0x0</td>
+                        <td class="border px-4 py-2" id="lrd">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">sp</td>
+                        <td class="border px-4 py-2" id="sp">0x0</td>
+                        <td class="border px-4 py-2" id="spd">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">pc</td>
+                        <td class="border px-4 py-2" id="pc">0x0</td>
+                        <td class="border px-4 py-2" id="pcd">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">cpsr</td>
+                        <td class="border px-4 py-2" id="cpsr">0x0</td>
+                        <td class="border px-4 py-2" id="cpsrd">0</td>
                     </tr>
                 </tbody>
             </table>
